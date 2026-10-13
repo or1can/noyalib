@@ -5,6 +5,28 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.58] - Unreleased
+
+### Changed: MSRV 1.86 to 1.89
+
+- **The minimum supported Rust version is now 1.89.0, for the core
+  library and every satellite.** This raise has no toolchain reason:
+  the toolchain-driven floor is still 1.86 (`criterion 0.8`, a
+  dev-dependency). It is a maintainer decision to share one floor with
+  his other Rust crates, recorded as
+  [ADR-0014](docs/adr/0014-shared-msrv-floor.md); `docs/POLICIES.md` §1
+  still governs every later raise. If you are pinned below 1.89, stay
+  on v0.0.57.
+- **The `msrv-core` job now builds on the MSRV.** `rust-toolchain.toml`
+  pins `stable`, and rustup prefers that file over the toolchain the
+  job installs, so `shared-msrv-core.yml` had been checking on stable.
+  It now sets `RUSTUP_TOOLCHAIN` from its `toolchain` input and asserts
+  `rustc --version` before building.
+- **`scripts/verify-release-versions.sh` checks the MSRV.** Every MSRV
+  statement in the README, policies, rustdoc and CI (32 checks) must
+  match `rust-version`; all 32 failed against the old statements. The
+  check found the README badges still saying 1.86.0 in their alt text.
+
 ## [v0.0.57] - 2026-10-09
 
 ### Fixed

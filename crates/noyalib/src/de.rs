@@ -217,20 +217,18 @@ where
         && !config.ignore_binary_tag_for_string
         && config.policies.is_empty();
     let mut streaming_err = None;
-    if stream_eligible {
-        if let Some(res) = crate::streaming::from_str_streaming(s, config) {
-            match res {
-                // A typed rejection the streaming walker cannot locate --
-                // serde's own visitor errors (`invalid type: ...`) and the
-                // typed `TypeMismatch` arms carry no position on this path.
-                // Keep it and fall through to the span-aware AST path
-                // below, which finds where the same failure is;
-                // `locate_streaming_error` joins the two. Success, and parse
-                // errors that already carry a location, return as they are;
-                // the second parse is paid only on the error path.
-                Err(err) if err.location().is_none() => streaming_err = Some(err),
-                other => return other,
-            }
+    if stream_eligible && let Some(res) = crate::streaming::from_str_streaming(s, config) {
+        match res {
+            // A typed rejection the streaming walker cannot locate --
+            // serde's own visitor errors (`invalid type: ...`) and the
+            // typed `TypeMismatch` arms carry no position on this path.
+            // Keep it and fall through to the span-aware AST path
+            // below, which finds where the same failure is;
+            // `locate_streaming_error` joins the two. Success, and parse
+            // errors that already carry a location, return as they are;
+            // the second parse is paid only on the error path.
+            Err(err) if err.location().is_none() => streaming_err = Some(err),
+            other => return other,
         }
     }
     let parse_config = parser::ParseConfig::from(config);
@@ -471,20 +469,18 @@ where
         && includes_inactive(config)
         && !value_target_bypass;
     let mut streaming_err = None;
-    if stream_eligible {
-        if let Some(res) = crate::streaming::from_str_streaming(s, config) {
-            match res {
-                // A typed rejection the streaming walker cannot locate --
-                // serde's own visitor errors (`invalid type: ...`) and the
-                // typed `TypeMismatch` arms carry no position on this path.
-                // Keep it and fall through to the span-aware AST path
-                // below, which finds where the same failure is;
-                // `locate_streaming_error` joins the two. Success, and parse
-                // errors that already carry a location, return as they are;
-                // the second parse is paid only on the error path.
-                Err(err) if err.location().is_none() => streaming_err = Some(err),
-                other => return other,
-            }
+    if stream_eligible && let Some(res) = crate::streaming::from_str_streaming(s, config) {
+        match res {
+            // A typed rejection the streaming walker cannot locate --
+            // serde's own visitor errors (`invalid type: ...`) and the
+            // typed `TypeMismatch` arms carry no position on this path.
+            // Keep it and fall through to the span-aware AST path
+            // below, which finds where the same failure is;
+            // `locate_streaming_error` joins the two. Success, and parse
+            // errors that already carry a location, return as they are;
+            // the second parse is paid only on the error path.
+            Err(err) if err.location().is_none() => streaming_err = Some(err),
+            other => return other,
         }
     }
 
@@ -901,14 +897,14 @@ impl IncludeWalk<'_> {
     /// the final tree's nesting, which `load` keeps within the parser's
     /// `max_depth`, so the walk's own stack use is bounded too.
     fn walk(&mut self, value: &mut Value, at: IncludeAt) -> Result<()> {
-        if let Value::Tagged(tagged) = value {
-            if tagged.tag().as_str() == "!include" {
-                let spec = tagged.value().as_str().map(str::to_owned).ok_or_else(|| {
-                    Error::Custom("!include directive expects a scalar string spec".into())
-                })?;
-                *value = self.load(&spec, at)?;
-                return Ok(());
-            }
+        if let Value::Tagged(tagged) = value
+            && tagged.tag().as_str() == "!include"
+        {
+            let spec = tagged.value().as_str().map(str::to_owned).ok_or_else(|| {
+                Error::Custom("!include directive expects a scalar string spec".into())
+            })?;
+            *value = self.load(&spec, at)?;
+            return Ok(());
         }
         let inner = IncludeAt {
             tree_depth: at.tree_depth + 1,

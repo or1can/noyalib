@@ -1587,10 +1587,10 @@ impl Document {
         // remaining refusals so a same-name rename is `Ok(())`
         // wherever the entry resolves at all — including inside a
         // flow mapping, whose renames are otherwise a follow-up.
-        if let Some(current) = decode_key_token(&self.source[tok_start..tok_end], token_kind) {
-            if current == new_key {
-                return Ok(());
-            }
+        if let Some(current) = decode_key_token(&self.source[tok_start..tok_end], token_kind)
+            && current == new_key
+        {
+            return Ok(());
         }
 
         // Both block-mapping entries and flow-mapping entries are
@@ -2580,10 +2580,10 @@ impl Document {
         // closing brace instead of appending a line (#338). Upserts of
         // an existing key fall through: `set` already writes into flow
         // sites.
-        if existing.is_none() {
-            if let Some(span) = self.flow_collection_span(mapping_path, b'{') {
-                return self.insert_flow_entry(mapping_path, key, &expected_child, &expected, span);
-            }
+        if existing.is_none()
+            && let Some(span) = self.flow_collection_span(mapping_path, b'{')
+        {
+            return self.insert_flow_entry(mapping_path, key, &expected_child, &expected, span);
         }
         let (column, anchor_pos, probe) = self.entry_insert_anchor(existing, mapping_path, key)?;
         self.refuse_inside_aliased_anchor("insert_entry_value", mapping_path, probe)?;
@@ -4270,19 +4270,19 @@ fn entry_line_span(
             // are exactly the entry's own, and the item must stay, so
             // the entry is replaced with `{}` in place instead of
             // splicing whole lines (#336).
-            if m.len() <= 1 && !is_flow_collection(source, *coll_start) {
-                if let Some(((key_start, _), entry_tree)) = entries.first() {
-                    if locate_preceding_dash(source, *key_start).is_some() {
-                        let (vs, rve) = span_tree_bounds(entry_tree);
-                        let end = owned_value_end(source, vs, rve);
-                        return Ok(Removal::SoleEntry {
-                            start: *key_start,
-                            end,
-                            empty: "{}",
-                            indent: 0,
-                        });
-                    }
-                }
+            if m.len() <= 1
+                && !is_flow_collection(source, *coll_start)
+                && let Some(((key_start, _), entry_tree)) = entries.first()
+                && locate_preceding_dash(source, *key_start).is_some()
+            {
+                let (vs, rve) = span_tree_bounds(entry_tree);
+                let end = owned_value_end(source, vs, rve);
+                return Ok(Removal::SoleEntry {
+                    start: *key_start,
+                    end,
+                    empty: "{}",
+                    indent: 0,
+                });
             }
             // Last entry: the collection itself becomes `{}`. Deleting the
             // bytes would leave a dangling `a:` that re-parses as null.
@@ -4693,10 +4693,11 @@ fn anchored_content_span(
     let mut pos = base;
     for child in node.children() {
         let len = child.text_len();
-        if let GreenChild::Node(inner) = child {
-            if pos <= mark_start && mark_start < pos + len {
-                return anchored_content_span(inner, pos, mark_start);
-            }
+        if let GreenChild::Node(inner) = child
+            && pos <= mark_start
+            && mark_start < pos + len
+        {
+            return anchored_content_span(inner, pos, mark_start);
         }
         pos += len;
     }
@@ -5554,11 +5555,11 @@ fn detect_indent_unit(source: &str) -> usize {
         if trimmed.is_empty() || trimmed.starts_with('#') {
             continue;
         }
-        if let Some(prev) = prev_indent {
-            if spaces > prev {
-                let step = spaces - prev;
-                min_step = Some(min_step.map_or(step, |m| m.min(step)));
-            }
+        if let Some(prev) = prev_indent
+            && spaces > prev
+        {
+            let step = spaces - prev;
+            min_step = Some(min_step.map_or(step, |m| m.min(step)));
         }
         prev_indent = Some(spaces);
     }

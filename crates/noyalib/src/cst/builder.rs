@@ -200,10 +200,10 @@ fn prepend_first_line_indent(s: &str, indent: usize) -> String {
 
 fn first_node_of_kind(node: &GreenNode, kind: SyntaxKind) -> Option<GreenNode> {
     for child in node.children() {
-        if let GreenChild::Node(n) = child {
-            if n.kind() == kind {
-                return Some(n.clone());
-            }
+        if let GreenChild::Node(n) = child
+            && n.kind() == kind
+        {
+            return Some(n.clone());
         }
     }
     None

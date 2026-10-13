@@ -2,7 +2,7 @@
 name = "noyalib"
 version = "0.0.57"
 edition = "2024"
-rust-version = "1.86.0"
+rust-version = "1.89.0"
 license = "MIT OR Apache-2.0"
 description = "A pure Rust YAML library with zero unsafe code and full serde integration"
 repository = "https://github.com/sebastienrousseau/noyalib"
@@ -157,7 +157,7 @@ figment = { version = "0.10", optional = true, features = ["env"] }
 # only used inside `#[cfg(feature = "compare-saphyr")]` bench
 # arms; nothing in the runtime crate references it. Off by default
 # so an `--all-features` build doesn't pull in the saphyr crate
-# (which is fine on MSRV 1.86+ but still extra deps the rest of
+# (which builds on the 1.89 MSRV but is still extra deps the rest of
 # the workspace doesn't need).
 serde-saphyr = { version = "1.1", optional = true }
 # Parallel multi-document parsing — pulled in only when the
