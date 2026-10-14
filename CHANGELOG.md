@@ -27,6 +27,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   match `rust-version`; all 32 failed against the old statements. The
   check found the README badges still saying 1.86.0 in their alt text.
 
+### Dependencies
+
+- tokio 1.53.2, from Dependabot #479. `cargo vet` needs the
+  maintainer's decision for it: `.git/vet-v0.0.58.sh` asks.
+
 ## [v0.0.57] - 2026-10-09
 
 ### Fixed
