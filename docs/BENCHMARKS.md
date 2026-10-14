@@ -27,6 +27,13 @@ non-serde parser), `serde_yml` (the maintainer's prior crate),
 `yaml-spanned` (the closest other span-tracking parser), and
 `serde-saphyr` (a high-performance newcomer).
 
+The `serde_yml` and `serde_yaml_ng` figures below are recorded
+measurements, not rerunnable today: both crates were retired from
+`benches/comparison.rs`, `serde_yml` in v0.0.6 (RUSTSEC-2025-0068)
+and `serde_yaml_ng` in v0.0.58 (its `unsafe-libyaml` dependency is
+unmaintained, RUSTSEC-2024-0449), so that `cargo deny` and
+`cargo audit` stay clean without exemptions.
+
 ### Deserialize (parse a YAML document into a `Value` AST)
 
 | Fixture | noyalib | vs `serde_yaml_ng` | vs `yaml-rust2` | vs `serde_yml` | vs `yaml-spanned` | vs `serde-saphyr` |

@@ -328,7 +328,7 @@ Rust (`untagged`, `borrow`, `transcode`, `comments`); Platform
 
 ```bash
 cargo bench --bench benchmarks            # core throughput
-cargo bench --bench comparison            # vs serde_yaml_ng, yaml-rust2, saphyr
+cargo bench --bench comparison            # vs yaml-rust2, yaml-spanned, saphyr
 cargo bench --bench architecture          # streaming vs AST, zero-copy, span-free
 cargo bench --bench simd            --features simd
 cargo bench --bench numeric_parse         # SWAR decimal pipeline

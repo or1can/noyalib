@@ -32,6 +32,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - tokio 1.53.2, from Dependabot #479. `cargo vet` needs the
   maintainer's decision for it: `.git/vet-v0.0.58.sh` asks.
 
+### Removed
+
+- **`serde_yaml_ng` is no longer a dev-dependency.** It depends on
+  `unsafe-libyaml`, which RUSTSEC-2024-0449 marks unmaintained, so
+  `cargo deny` failed. Following the policy in `deny.toml` (retire
+  such contenders, as `serde_yml` was in v0.0.6, rather than exempt
+  them), its rows leave `benches/comparison.rs` and
+  `benches/architecture.rs`; the typed, serialize and roundtrip groups
+  now measure noyalib alone, and the recorded figures in
+  `docs/BENCHMARKS.md` are marked as such. The conformance harness
+  parses the yaml-test-suite wrappers with `yaml-rust2` instead, which
+  yields the same 406 cases from all 351 files.
+
 ## [v0.0.57] - 2026-10-09
 
 ### Fixed
